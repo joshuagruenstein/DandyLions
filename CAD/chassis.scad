@@ -1,5 +1,10 @@
 include <puzzle.scad>
 
+// 0.12LB BALL
+
+// MCMASTER 1832K25: 36 - 0LB  FORCE
+// MCMASTTER 9654K198: 10 - 3.6LB FORCE
+
 res = 100;
 
 thickness = 0.25;
@@ -87,7 +92,7 @@ module BottomPlate_2d() {
         translate([width/2-2.25,wheel_location+1.125]) rotate(90) knotches(0.25, 4*(length-0.5 - (wheel_location+0.75)*2)-1);
         translate([width/2+2.5,wheel_location+1.125]) rotate(90) knotches(0.25, 4*(length-0.5 - (wheel_location+0.75)*2)-1);
         
-        // REMEMBER TO ADD HOLES FOR SHOOTER MOTOR
+        translate([width/2+1.7,length/2]) MotorMount_2d();
 	}
 }
 
@@ -115,6 +120,10 @@ module RightGuard_2d() {
         translate([wheel_location-0.25,0]) scale([1,2]) circle(1,$fn=res);   
         
         translate([length-wheel_location-0.25,0]) scale([1,2]) circle(1,$fn=res); 
+        
+        translate([8,4.5]) circle(0.157,$fn=res); 
+        
+        translate([9,2]) circle(0.157,$fn=res); 
     }
     
     translate([0.5,height-0.5]) knotches(0.5,length*2 - 2.5);
@@ -230,15 +239,15 @@ module knotches(width, number) {
 module Render() {
 	color([1,0,0]) translate([0,0,0.25]) linear_extrude(height=thickness) BottomPlate_2d();
 
-	color([0,1,0]) translate([0,thickness,0]) rotate([90,0,0]) linear_extrude(height=thickness) FrontPlate_2d(true);
+	//color([0,1,0]) translate([0,thickness,0]) rotate([90,0,0]) linear_extrude(height=thickness) FrontPlate_2d(true);
 
-	color([1,0,1]) translate([width-thickness,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) LeftPlate_2d();
+	//color([1,0,1]) translate([width-thickness,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) LeftPlate_2d();
 
-	color([1,1,0]) translate([width,length-thickness,0]) rotate([90,0,180]) linear_extrude(height=thickness) BackPlate_2d();
+	//color([1,1,0]) translate([width,length-thickness,0]) rotate([90,0,180]) linear_extrude(height=thickness) BackPlate_2d();
 
-	color([1,0,1]) translate([0,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) RightPlate_2d();
+	//color([1,0,1]) translate([0,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) RightPlate_2d();
 
-	color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
+	//color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
     
     translate([width/2-1,curve_depth+0.25,0.25]) rotate([90,0,90]) linear_extrude(height=thickness) Ramp_2d();
     
@@ -254,6 +263,11 @@ module Render() {
     
     translate([width/2,6.4,2]) Cup_3d(true);
     
+    color([.8,.8,.8]) translate([3,8.25,5]) rotate([90,0,90]) cylinder(6,0.1,0.1,$fn=res); 
+    color([.8,.8,.8]) translate([4.625,9.07,5]) rotate([90,0,90]) cylinder(2.75,0.1,0.1,$fn=res);
+    color([.8,.8,.8]) translate([3,9.25,2.5]) rotate([90,0,90]) cylinder(6,0.1,0.1,$fn=res); 
+ 
+    
     translate([width/2+1.7,length/2-1.4,0.5]) rotate([0,0,0]) Motor_Pair_3d();
 }
 
@@ -265,7 +279,6 @@ module Cup_3d(ball) {
     distance = 1.1;
     
     translate([-0.25-distance,0,1.4]) rotate([90,0,90]) linear_extrude(height=thickness) CupSide_2d();
-    
     translate([distance,0,1.4]) rotate([90,0,90]) linear_extrude(height=thickness) CupSide_2d();
     
 }
