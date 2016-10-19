@@ -1,9 +1,8 @@
 include <puzzle.scad>
 
 // 0.12LB BALL
-
-// MCMASTER 1832K25: 36 - 0LB  FORCE
-// MCMASTTER 9654K198: 10 - 3.6LB FORCE
+// SHORTEST DISTANCE: 2.5"
+// EXTENSION: ~ 0.5" ?
 
 res = 100;
 
@@ -26,33 +25,37 @@ curve_depth = 1.5;
 ramp_length = 2.5;
 ramp_height = 2;
 
-// NOTE: ADD FINGERS FOR FRONT AND BACK PANELS ON GUARDS
-
 module FrontPlate_2d(is_square) {
 	difference() {
         InterlockingPlate(width,height,0,0,0,1,0.25);
         translate([width/2,2]) square([4.5,4],center=true);
+        
+        translate([width/2 - 2.25,0.75]) rotate(90) knotches(0.5,height*2 - 2.5);
+        translate([width/2 + 2.5,0.75]) rotate(90) knotches(0.5,height*2 - 2.5);
     }
 }
 
 module LeftPlate_2d() {
 	difference() {
         InterlockingPlate(length,height,0,0,0,1,0.25);
-        translate([length/2,height*.8]) PingSensor_2d();
+        //translate([length/2,height*.8]) PingSensor_2d();
     }
 }
 
 module RightPlate_2d() {
     difference() {
         InterlockingPlate(length,height,0,1,1,0,0.25);
-        translate([length/2,height*.8]) PingSensor_2d();
+        //translate([length/2,height*.8]) PingSensor_2d();
     }
 }
 
 module BackPlate_2d() {
 	difference() {
 		InterlockingPlate(width,height,0,1,0,1,0.25);
-        translate([width/2,height*.8]) PingSensor_2d();
+                
+        translate([width/2 - 2.25,0.75]) rotate(90) knotches(0.5,height*2 - 2.5);
+        translate([width/2 + 2.5,0.75]) rotate(90) knotches(0.5,height*2 - 2.5);
+
 	}
 }
 
@@ -129,6 +132,9 @@ module RightGuard_2d() {
     translate([0.5,height-0.5]) knotches(0.5,length*2 - 2.5);
     
     translate([wheel_location+0.875,0]) knotches(0.25, 4*(length-0.5 - (wheel_location+0.75)*2)-1);
+    
+    translate([0,0.5]) rotate(90) knotches(0.5,height*2 - 2.5);
+    translate([length-0.25,0.5]) rotate(90) knotches(0.5,height*2 - 2.5);
 }
 
 module LeftGuard_2d() {
@@ -239,15 +245,15 @@ module knotches(width, number) {
 module Render() {
 	color([1,0,0]) translate([0,0,0.25]) linear_extrude(height=thickness) BottomPlate_2d();
 
-	//color([0,1,0]) translate([0,thickness,0]) rotate([90,0,0]) linear_extrude(height=thickness) FrontPlate_2d(true);
+	color([0,1,0]) translate([0,thickness,0]) rotate([90,0,0]) linear_extrude(height=thickness) FrontPlate_2d(true);
 
-	//color([1,0,1]) translate([width-thickness,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) LeftPlate_2d();
+	color([1,0,1]) translate([width-thickness,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) LeftPlate_2d();
 
-	//color([1,1,0]) translate([width,length-thickness,0]) rotate([90,0,180]) linear_extrude(height=thickness) BackPlate_2d();
+	color([1,1,0]) translate([width,length-thickness,0]) rotate([90,0,180]) linear_extrude(height=thickness) BackPlate_2d();
 
-	//color([1,0,1]) translate([0,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) RightPlate_2d();
+	color([1,0,1]) translate([0,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) RightPlate_2d();
 
-	//color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
+	color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
     
     translate([width/2-1,curve_depth+0.25,0.25]) rotate([90,0,90]) linear_extrude(height=thickness) Ramp_2d();
     
