@@ -4,6 +4,8 @@ include <puzzle.scad>
 // SHORTEST DISTANCE: 2.5"
 // EXTENSION: ~ 0.5" ?
 
+// BRUSH HOLDER: MCMASTER 7900T34
+
 res = 100;
 
 thickness = 0.25;
@@ -32,6 +34,12 @@ module FrontPlate_2d(is_square) {
         
         translate([width/2 - 2.25,0.75]) rotate(90) knotches(0.5,height*2 - 2.5);
         translate([width/2 + 2.5,0.75]) rotate(90) knotches(0.5,height*2 - 2.5);
+        
+        for (i=[width/2-2.25:0.25:width/2+2.125]) {
+            translate([i,0]) square([0.125,5.5]);
+        }
+        
+        translate([width/2-3.25,4.17]) MotorMount_2d();
     }
 }
 
@@ -111,7 +119,7 @@ module Ramp_2d() {
     }
 }
 
-module RightGuard_2d() {
+module Guard_2d() {
     translate([0.5,0]) square([0.5,0.25]);
     translate([length-1.5,0]) square([0.5,0.25]);
     
@@ -137,10 +145,31 @@ module RightGuard_2d() {
     translate([length-0.25,0.5]) rotate(90) knotches(0.5,height*2 - 2.5);
 }
 
+module RightGuard_2d() {
+    difference() {
+        Guard_2d();
+        translate([0.62,3.9]) circle(0.35,$fn=res);
+    }
+}
+
+// Bushing: 5448T1
+// 6MM bore, 10MM OD, 14MM flange
 module LeftGuard_2d() {
     difference() {
-        RightGuard_2d();
+        Guard_2d();
         translate([(length-0.5)/2,1.14]) circle(0.8,$fn=res);
+        
+        translate([0.62,3.9]) circle(0.196,$fn=res);
+    }
+}
+
+module Intake_2d() {    
+    difference() {
+        square([4.25,0.75]);
+        for (i=[0:0.5:3.5]) {
+            translate([i+0.375,0.2]) circle(screw_diameter/2,$fn=res);
+            translate([i+0.375,0.55]) circle(screw_diameter/2,$fn=res);
+        }
     }
 }
 
@@ -156,6 +185,7 @@ module Motor_Set_2d(loc) {
     translate([width-wall_dist+axle_length,loc]) square([wheel_width,wheel_diameter], center=true);
 }
 
+// ADD HOLE FOR BALL EXIT
 module TopPlate_2d() {
     difference() {
         InterlockingPlate(width,length,1,1,0,1);
@@ -249,11 +279,11 @@ module Render() {
 
 	color([1,0,1]) translate([width-thickness,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) LeftPlate_2d();
 
-	color([1,1,0]) translate([width,length-thickness,0]) rotate([90,0,180]) linear_extrude(height=thickness) BackPlate_2d();
+	//color([1,1,0]) translate([width,length-thickness,0]) rotate([90,0,180]) linear_extrude(height=thickness) BackPlate_2d();
 
 	color([1,0,1]) translate([0,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) RightPlate_2d();
 
-	color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
+	//color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
     
     translate([width/2-1,curve_depth+0.25,0.25]) rotate([90,0,90]) linear_extrude(height=thickness) Ramp_2d();
     
@@ -275,6 +305,14 @@ module Render() {
  
     
     translate([width/2+1.7,length/2-1.4,0.5]) rotate([0,0,0]) Motor_Pair_3d();
+    
+    translate([width/2+-2.75,0.25,2.75]) rotate([90,0,180]) Motor_Pair_3d();
+    
+    translate([width/2-2.125,0.75,3.775]) rotate([90,0,0]) linear_extrude(height=thickness) Intake_2d();
+
+    translate([width/2-2.125,1.25,3.775]) rotate([90,0,0]) linear_extrude(height=thickness) Intake_2d();
+
+    Particle(width/2);
 }
 
 module Cup_3d(ball) {
