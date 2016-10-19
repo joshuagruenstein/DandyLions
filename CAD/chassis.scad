@@ -130,6 +130,19 @@ module Wheel_Pair_3d(loc) {
 
 			translate([width-thickness-0.8,loc,axle_height+.25+thickness]) rotate([90,0,90]) linear_extrude(height=thickness*wheel_stack,center=true) Wheel_2d();
 	}
+        
+    translate([1.75,loc-1.41,0.5]) Motor_Pair_3d();
+    translate([width-1.75,loc+1.42,0.5]) rotate([0,0,180]) Motor_Pair_3d();
+}
+
+module Motor_Pair_3d() {
+    indent = 0.2;
+    
+    color([0.6,0.6,0.6]) rotate([90,0,90]) scale(0.0393701) import("tetrix/motor_mount.stl");
+    
+    translate([2.67-indent,0.68,0.15]) color([0.8,0.8,0.8]) rotate([0,0,90]) scale(0.0393701) import("tetrix/motor.stl");
+    
+    
 }
 
 CheckLayout_3d();
