@@ -1,6 +1,6 @@
 include <puzzle.scad>
 
-res = 200;
+res = 100;
 
 thickness = 0.25;
 
@@ -11,6 +11,7 @@ width = 12;
 length = 10;
 height = 6;
 
+axle_height = 0.16 + 0.47;
 wheel_diameter = 3;
 screw_diameter = 0.125;
 wheel_stack = 2;
@@ -19,6 +20,8 @@ wheel_location = 2.25;
 curve_depth = 1.5;
 ramp_length = 2.5;
 ramp_height = 2;
+
+// NOTE: ADD FINGERS FOR FRONT AND BACK PANELS ON GUARDS
 
 module FrontPlate_2d(is_square) {
 	difference() {
@@ -83,6 +86,8 @@ module BottomPlate_2d() {
         
         translate([width/2-2.25,wheel_location+1.125]) rotate(90) knotches(0.25, 4*(length-0.5 - (wheel_location+0.75)*2)-1);
         translate([width/2+2.5,wheel_location+1.125]) rotate(90) knotches(0.25, 4*(length-0.5 - (wheel_location+0.75)*2)-1);
+        
+        // REMEMBER TO ADD HOLES FOR SHOOTER MOTOR
 	}
 }
 
@@ -98,7 +103,7 @@ module Ramp_2d() {
     }
 }
 
-module Guard_2d() {
+module RightGuard_2d() {
     translate([0.5,0]) square([0.5,0.25]);
     translate([length-1.5,0]) square([0.5,0.25]);
     
@@ -115,6 +120,13 @@ module Guard_2d() {
     translate([0.5,height-0.5]) knotches(0.5,length*2 - 2.5);
     
     translate([wheel_location+0.875,0]) knotches(0.25, 4*(length-0.5 - (wheel_location+0.75)*2)-1);
+}
+
+module LeftGuard_2d() {
+    difference() {
+        RightGuard_2d();
+        translate([(length-0.5)/2,1.14]) circle(0.8,$fn=res);
+    }
 }
 
 module Motor_Set_2d(loc) {
@@ -160,6 +172,55 @@ module Wheel_2d() {
 	}
 }
 
+module CupSide_2d() {
+    radius = 2;
+    
+    difference() {
+        union() {
+            circle(radius,$fn=res);
+            translate([-radius,0]) square([radius*2,radius]);
+        }
+        
+        circle(radius-0.5,$fn=res);
+        translate([-(radius-0.5),0]) square([radius*2-1,radius]);
+        
+        translate([-2,-0.9]) square([1,5]);
+        
+        translate([1.5,1]) difference() {
+            square([1,1]);
+            translate([0.5,0.5]) circle(0.5,$fn=res);
+            square([1,0.5]);
+        }
+        
+        translate([1.85,1.6]) circle(0.157,$fn=res);
+        
+    } translate([2,0]) difference() {
+        square([1,2]);
+        translate([0.5,0.5]) circle(0.5,$fn=res);
+        translate([0.5,-1]) square([1,2]);
+        translate([0,-1.5]) square([1,2]);
+        
+        translate([0.65,1.6]) circle(0.157,$fn=res);
+        
+        translate([0,1]) difference() {
+            square([1,1]);
+            translate([0.5,0.5]) circle(0.5,$fn=res);
+            translate([-0.5,0]) square([1,2]);
+        }
+    } translate([0.23-radius,-1.1]) difference() {
+        circle(0.2,$fn=res);
+        circle(screw_diameter/2,$fn=res);
+    } translate([radius-0.25,-1.1]) difference() {
+        circle(0.2,$fn=res);
+        circle(screw_diameter/2,$fn=res);
+    } translate([radius+0.25,0.8]) difference() {
+        circle(0.2,$fn=res);
+        circle(screw_diameter/2,$fn=res);
+    }
+    
+}
+
+
 module knotches(width, number) {
     for (i=[0:2*width:width*number]) {
         translate([i,0,0]) square([width,thickness]);
@@ -183,20 +244,34 @@ module Render() {
     
     translate([width/2+0.75,curve_depth+0.25,0.25]) rotate([90,0,90]) linear_extrude(height=thickness) Ramp_2d();
     
-    color([1,0,1]) translate([width/2-2.5,0.25,0.25]) rotate([90,0,90]) linear_extrude(height=thickness) Guard_2d();
+    color([1,0,1]) translate([width/2-2.5,0.25,0.25]) rotate([90,0,90]) linear_extrude(height=thickness) RightGuard_2d();
 
-    color([1,0,1]) translate([width/2+2.25,0.25,0.25]) rotate([90,0,90]) linear_extrude(height=thickness) Guard_2d();
+    color([1,0,1]) translate([width/2+2.25,0.25,0.25]) rotate([90,0,90]) linear_extrude(height=thickness) LeftGuard_2d();
 
 
 	Wheel_Pair_3d(wheel_location);
     Wheel_Pair_3d(length-wheel_location);
     
-    Particle(width/2);
+    translate([width/2,6.4,2]) Cup_3d(true);
+    
+    translate([width/2+1.7,length/2-1.4,0.5]) rotate([0,0,0]) Motor_Pair_3d();
 }
 
-module Wheel_Pair_3d(loc) {
-    axle_height = 0.16 + 0.47;
+module Cup_3d(ball) {
+    if (ball) {
+        Particle();
+    }
+    
+    distance = 1.1;
+    
+    translate([-0.25-distance,0,1.4]) rotate([90,0,90]) linear_extrude(height=thickness) CupSide_2d();
+    
+    translate([distance,0,1.4]) rotate([90,0,90]) linear_extrude(height=thickness) CupSide_2d();
+    
+}
 
+
+module Wheel_Pair_3d(loc) {
     color([1,1,1]) {
 			translate([thickness+0.8,loc,axle_height+.25+thickness]) rotate([90,0,90]) linear_extrude(height=thickness*wheel_stack,center=true) Wheel_2d();
 
