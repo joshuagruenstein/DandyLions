@@ -126,6 +126,9 @@ module Ramp_2d() {
 }
 
 module Guard_2d() {
+    bump_width = 0.9;
+    bump_height = 1.7;
+    
     translate([0.5,0]) square([0.5,0.25]);
     translate([length-1.5,0]) square([0.5,0.25]);
     
@@ -134,9 +137,9 @@ module Guard_2d() {
     translate([0,0.25]) difference() {
         square([length-0.5,height-0.75]);
         
-        translate([wheel_location-0.25,0]) scale([1,2]) circle(1,$fn=res);   
+        translate([wheel_location-0.25,0]) scale([bump_width,bump_height]) circle(1,$fn=res);   
         
-        translate([length-wheel_location-0.25,0]) scale([1,2]) circle(1,$fn=res); 
+        translate([length-wheel_location-0.25,0]) scale([bump_width,bump_height]) circle(1,$fn=res); 
         
         translate([8,4.5]) circle(0.157,$fn=res); 
         
@@ -206,7 +209,8 @@ module Motor_Set_2d(loc) {
 }
 
 // ADD HOLE FOR BALL EXIT
-// Cable: https://goo.gl/nJVBgs
+// Cable: https://www.amazon.com/dp/B00JSXUJ7Y/ref=psdc_464394_t3_B00ENZDN3Y
+// Adapter: https://www.amazon.com/StarTech-com-Micro-Mini-Adapter-UUSBMUSBFM/dp/B002O1S8IE/ref=sr_1_1?ie=UTF8&qid=1476927961&sr=8-1&keywords=micro+to+mini+usb+adapter
 module TopPlate_2d() {
     difference() {
         InterlockingPlate(width,length,1,1,0,1);
@@ -300,15 +304,15 @@ module knotches(width, number) {
 module Render() {
 	color([1,0,0]) translate([0,0,0.25]) linear_extrude(height=thickness) BottomPlate_2d();
 
-	color([0,1,0]) translate([0,thickness,0]) rotate([90,0,0]) linear_extrude(height=thickness) FrontPlate_2d(true);
+	//color([0,1,0]) translate([0,thickness,0]) rotate([90,0,0]) linear_extrude(height=thickness) FrontPlate_2d(true);
 
-	color([1,0,1]) translate([width-thickness,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) LeftPlate_2d();
+	//color([1,0,1]) translate([width-thickness,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) LeftPlate_2d();
 
 	//color([1,1,0]) translate([width,length-thickness,0]) rotate([90,0,180]) linear_extrude(height=thickness) BackPlate_2d();
 
-	color([1,0,1]) translate([0,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) RightPlate_2d();
+	//color([1,0,1]) translate([0,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) RightPlate_2d();
 
-	color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
+	//color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
     
     translate([width/2-1,curve_depth+0.25,0.25]) rotate([90,0,90]) linear_extrude(height=thickness) Ramp_2d();
     
@@ -337,11 +341,17 @@ module Render() {
 
     translate([width/2-2.125,1.25,3.775]) rotate([90,0,0]) linear_extrude(height=thickness) Intake_2d();
 
-    Particle(width/2);
+    //Particle(width/2);
     
     translate([width/2+2.75,0.3,0.5]) MotoG();
     
     translate([width/2+2.25,1,2]) rotate([90,0,0]) linear_extrude(height=thickness) PhoneSupport_2d();
+    
+    translate([3.6,0.8,-0.5]) rotate([0,90,90]) PowerModule_3d();
+}
+
+module PowerModule_3d() {
+    color([0.5,1,1]) scale(0.393701) import("tetrix/power_module.stl");
 }
 
 module Cup_3d(ball) {
