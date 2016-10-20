@@ -21,7 +21,7 @@ axle_height = 0.16 + 0.47;
 wheel_diameter = 3;
 screw_diameter = 0.125;
 wheel_stack = 2;
-wheel_location = 2.25;
+wheel_location = 2.4;
 
 curve_depth = 1.5;
 ramp_length = 2.5;
@@ -41,13 +41,19 @@ module FrontPlate_2d(is_square) {
         
         translate([width/2-3.25,4.17]) MotorMount_2d();
     }
+    
+    translate([width/2+2.5,height-0.25]) square([3,0.25]);
 }
 
 module LeftPlate_2d() {
 	difference() {
         InterlockingPlate(length,height,0,0,0,1,0.25);
         //translate([length/2,height*.8]) PingSensor_2d();
+        
+        translate([1,2]) rotate(90) knotches(0.25,5);
     }
+    
+    translate([0,height-0.25]) square([0.5,0.25]);
 }
 
 module RightPlate_2d() {
@@ -160,6 +166,8 @@ module LeftGuard_2d() {
         translate([(length-0.5)/2,1.14]) circle(0.8,$fn=res);
         
         translate([0.62,3.9]) circle(0.196,$fn=res);
+        
+        translate([0.75,1.75]) rotate(90) knotches(0.25,5);
     }
 }
 
@@ -171,6 +179,18 @@ module Intake_2d() {
             translate([i+0.375,0.55]) circle(screw_diameter/2,$fn=res);
         }
     }
+}
+
+module PhoneSupport_2d() {
+    bracket_width = width/2-2.25;
+    bracket_height = 1.25;
+    
+    difference() {
+        square([bracket_width,bracket_height]);
+        translate([0.25,-0.25]) rotate(90) knotches(0.25,5);
+        translate([bracket_width,-0.25]) rotate(90) knotches(0.25,5);
+    }
+    
 }
 
 module Motor_Set_2d(loc) {
@@ -186,12 +206,17 @@ module Motor_Set_2d(loc) {
 }
 
 // ADD HOLE FOR BALL EXIT
+// Cable: https://goo.gl/nJVBgs
 module TopPlate_2d() {
     difference() {
         InterlockingPlate(width,length,1,1,0,1);
         
         translate([width/2-(4.5/2),0.75]) rotate(90)knotches(0.5,length*2 - 2.5);
         translate([width/2+(4.5/2)+0.25,0.75]) rotate(90)knotches(0.5,length*2 - 2.5);
+        
+        translate([width/2+2.5,0,0]) square([width/2-2.25,0.8]);
+        
+        translate([width-width/4+1.1875,0.8]) circle(0.4,$fn=res);
     }
 }
 
@@ -283,7 +308,7 @@ module Render() {
 
 	color([1,0,1]) translate([0,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) RightPlate_2d();
 
-	//color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
+	color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
     
     translate([width/2-1,curve_depth+0.25,0.25]) rotate([90,0,90]) linear_extrude(height=thickness) Ramp_2d();
     
@@ -313,6 +338,10 @@ module Render() {
     translate([width/2-2.125,1.25,3.775]) rotate([90,0,0]) linear_extrude(height=thickness) Intake_2d();
 
     Particle(width/2);
+    
+    translate([width/2+2.75,0.3,0.5]) MotoG();
+    
+    translate([width/2+2.25,1,2]) rotate([90,0,0]) linear_extrude(height=thickness) PhoneSupport_2d();
 }
 
 module Cup_3d(ball) {
@@ -345,6 +374,10 @@ module Motor_Pair_3d() {
     color([0.6,0.6,0.6]) rotate([90,0,90]) scale(0.0393701) import("tetrix/motor_mount.stl");
     
     translate([2.67-indent,0.68,0.15]) color([0.8,0.8,0.8]) rotate([0,0,90]) scale(0.0393701) import("tetrix/motor.stl");
+}
+
+module MotoG() {
+    color([0.4,0.8,0.1]) cube([2.59,0.46,5.11]); 
 }
 
 module Particle(x,y,z) {
