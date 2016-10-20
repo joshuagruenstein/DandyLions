@@ -19,7 +19,7 @@ height = 6;
 
 axle_height = 0.16 + 0.47;
 wheel_diameter = 3;
-screw_diameter = 0.125;
+screw_diameter = 0.13;
 wheel_stack = 2;
 wheel_location = 2.4;
 
@@ -143,7 +143,7 @@ module Guard_2d() {
         
         translate([8,4.5]) circle(0.157,$fn=res); 
         
-        translate([9,2]) circle(0.157,$fn=res); 
+        translate([9,2]) circle(0.157,$fn=res);  
     }
     
     translate([0.5,height-0.5]) knotches(0.5,length*2 - 2.5);
@@ -155,15 +155,29 @@ module Guard_2d() {
 }
 
 module RightGuard_2d() {
+    topLeftX = 2.88;
+    topLeftY = 5.18;
+    
     difference() {
         Guard_2d();
         translate([0.62,3.9]) circle(0.35,$fn=res);
+        
+        translate([3.5,0.75]) circle(0.3,$fn=res);
+        translate([length-4,0.75]) circle(0.3,$fn=res);
+        
+        translate([topLeftX,topLeftY]) circle(screw_diameter/2,$fn=res);
+        translate([topLeftX+3.78,topLeftY]) circle(screw_diameter/2,$fn=res);
+        translate([topLeftX,topLeftY-3.44]) circle(screw_diameter/2,$fn=res);
+        translate([topLeftX+3.78,topLeftY-3.44]) circle(screw_diameter/2,$fn=res);
     }
 }
 
 // Bushing: 5448T1
 // 6MM bore, 10MM OD, 14MM flange
 module LeftGuard_2d() {
+    topLeftX = 3.45;
+    topLeftY = 5.32;
+    
     difference() {
         Guard_2d();
         translate([(length-0.5)/2,1.14]) circle(0.8,$fn=res);
@@ -171,6 +185,14 @@ module LeftGuard_2d() {
         translate([0.62,3.9]) circle(0.196,$fn=res);
         
         translate([0.75,1.75]) rotate(90) knotches(0.25,5);
+        
+        translate([3.2,1.7]) circle(0.3,$fn=res);
+        translate([length-3.8,1.7]) circle(0.3,$fn=res);
+        
+        translate([topLeftX,topLeftY]) circle(screw_diameter/2,$fn=res);
+        translate([topLeftX+2.52,topLeftY]) circle(screw_diameter/2,$fn=res);
+        translate([topLeftX,topLeftY-3.15]) circle(screw_diameter/2,$fn=res);
+        translate([topLeftX+2.52,topLeftY-3.15]) circle(screw_diameter/2,$fn=res);
     }
 }
 
@@ -304,15 +326,15 @@ module knotches(width, number) {
 module Render() {
 	color([1,0,0]) translate([0,0,0.25]) linear_extrude(height=thickness) BottomPlate_2d();
 
-	//color([0,1,0]) translate([0,thickness,0]) rotate([90,0,0]) linear_extrude(height=thickness) FrontPlate_2d(true);
+	color([0,1,0]) translate([0,thickness,0]) rotate([90,0,0]) linear_extrude(height=thickness) FrontPlate_2d(true);
 
-	//color([1,0,1]) translate([width-thickness,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) LeftPlate_2d();
+	color([1,0,1]) translate([width-thickness,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) LeftPlate_2d();
 
-	//color([1,1,0]) translate([width,length-thickness,0]) rotate([90,0,180]) linear_extrude(height=thickness) BackPlate_2d();
+	color([1,1,0]) translate([width,length-thickness,0]) rotate([90,0,180]) linear_extrude(height=thickness) BackPlate_2d();
 
-	//color([1,0,1]) translate([0,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) RightPlate_2d();
+	color([1,0,1]) translate([0,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) RightPlate_2d();
 
-	//color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
+	color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
     
     translate([width/2-1,curve_depth+0.25,0.25]) rotate([90,0,90]) linear_extrude(height=thickness) Ramp_2d();
     
@@ -341,17 +363,17 @@ module Render() {
 
     translate([width/2-2.125,1.25,3.775]) rotate([90,0,0]) linear_extrude(height=thickness) Intake_2d();
 
-    //Particle(width/2);
+    Particle(width/2);
     
     translate([width/2+2.75,0.3,0.5]) MotoG();
     
     translate([width/2+2.25,1,2]) rotate([90,0,0]) linear_extrude(height=thickness) PhoneSupport_2d();
     
     translate([3.6,0.8,-0.5]) rotate([0,90,90]) PowerModule_3d();
-}
-
-module PowerModule_3d() {
-    color([0.5,1,1]) scale(0.393701) import("tetrix/power_module.stl");
+    
+    translate([9.75,4.75,3.75]) rotate([0,90,270])MotorController_3d();
+    
+    translate([9.75+1.125,4.75,3.75]) rotate([0,90,270])MotorController_3d();
 }
 
 module Cup_3d(ball) {
@@ -363,7 +385,6 @@ module Cup_3d(ball) {
     
     translate([-0.25-distance,0,1.4]) rotate([90,0,90]) linear_extrude(height=thickness) CupSide_2d();
     translate([distance,0,1.4]) rotate([90,0,90]) linear_extrude(height=thickness) CupSide_2d();
-    
 }
 
 
@@ -384,6 +405,14 @@ module Motor_Pair_3d() {
     color([0.6,0.6,0.6]) rotate([90,0,90]) scale(0.0393701) import("tetrix/motor_mount.stl");
     
     translate([2.67-indent,0.68,0.15]) color([0.8,0.8,0.8]) rotate([0,0,90]) scale(0.0393701) import("tetrix/motor.stl");
+}
+
+module PowerModule_3d() {
+    color([0.5,1,1]) scale(0.393701) import("tetrix/power_module.stl");
+}
+
+module MotorController_3d() {
+    color([0.5,1,1]) scale(0.393701) import("tetrix/motor_controller.stl");
 }
 
 module MotoG() {
