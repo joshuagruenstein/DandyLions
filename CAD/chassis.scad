@@ -30,7 +30,7 @@ battery_slot_width = 2.225;
 battery_slot_length = 5.125;
 
 finger_hole_radius = 0.4;
-
+spinner_height = 4.35;
 
 /////////////////////////////
 //   MAIN ROBOT STRUCTURE  //
@@ -48,7 +48,7 @@ module FrontPlate_2d() {
             translate([i,0]) square([0.125,6]);
         }
         
-        translate([width/2-3.25,4.17]) MotorMount_2d();
+        translate([width/2-3.25,spinner_height]) MotorMount_2d();
         
     }
     
@@ -206,7 +206,7 @@ module RightGuard_2d() {
     
     difference() {
         Guard_2d();
-        translate([0.62,3.9]) circle(0.35,$fn=res);
+        translate([0.62,spinner_height-0.27]) circle(0.35,$fn=res);
         
         translate([3.5,0.75]) circle(0.3,$fn=res);
         translate([length-4,0.75]) circle(0.3,$fn=res);
@@ -228,7 +228,7 @@ module LeftGuard_2d() {
         Guard_2d();
         translate([(length-0.5)/2,1.14]) circle(0.8,$fn=res);
         
-        translate([0.62,3.9]) circle(0.196,$fn=res);
+        translate([0.62,spinner_height-0.27]) circle(0.196,$fn=res);
         
         translate([0.75,1.75]) rotate(90) knotches(0.25,5);
         
@@ -432,11 +432,11 @@ module Render() {
     
     translate([width/2+1.7,length/2-1.4,0.5]) rotate([0,0,0]) Motor_Pair_3d();
     
-    translate([width/2+-2.75,0.25,2.75]) rotate([90,0,180]) Motor_Pair_3d();
+    translate([width/2+-2.75,0.25,spinner_height-1.42]) rotate([90,0,180]) Motor_Pair_3d();
     
-    translate([width/2-2.125,0.75,3.775]) rotate([90,0,0]) linear_extrude(height=thickness) Intake_2d();
+    translate([width/2-2.125,0.75,spinner_height-0.395]) rotate([90,0,0]) linear_extrude(height=thickness) Intake_2d();
 
-    translate([width/2-2.125,1.25,3.775]) rotate([90,0,0]) linear_extrude(height=thickness) Intake_2d();
+    translate([width/2-2.125,1.25,spinner_height-0.395]) rotate([90,0,0]) linear_extrude(height=thickness) Intake_2d();
 
     Particle(width/2);
     
