@@ -36,7 +36,7 @@ battery_slot_length = 5.125;
 
 finger_hole_radius = 0.4;
 
-module FrontPlate_2d(is_square) {
+module FrontPlate_2d() {
 	difference() {
         InterlockingPlate(width,height,0,0,0,1,0.25);
         translate([width/2,2]) square([4.5,20],center=true);
@@ -53,6 +53,22 @@ module FrontPlate_2d(is_square) {
     }
     
     translate([width/2+2.5,height-0.25]) square([3,0.25]);
+}
+
+module FrontRightPlate_2d() {
+    difference() {
+        FrontPlate_2d();
+        translate([width/2,0]) square([10,10]);
+
+        translate([width/2-2.5,height-0.25]) square(0.25);
+    } 
+}
+
+module FrontLeftPlate_2d() {
+    translate([-(width/2+2.25),0]) difference() {
+        FrontPlate_2d();
+        square([5,10]);
+    }
 }
 
 module LeftPlate_2d() {
@@ -258,7 +274,11 @@ module TopPlate_2d() {
         
         
         translate([width-0.5-0.57,length-0.5-1.08]) square([0.57,1.08]);
-    } translate([width/2-2.25,0]) square([4.5,0.25]);
+    }
+    
+    translate([width/2-2.25,0]) square([4.5,0.25]);
+    
+    translate([width/2-2.5,0]) square(0.25);
 }
 
 module Wheel_2d() {
@@ -341,7 +361,10 @@ module knotches(width, number) {
 module Render() {
 	color([1,0,0]) translate([0,0,0.25]) linear_extrude(height=thickness) BottomPlate_2d();
 
-	color([0,1,0]) translate([0,thickness,0]) rotate([90,0,0]) linear_extrude(height=thickness) FrontPlate_2d(true);
+	color([0,1,0]) translate([0,thickness,0]) rotate([90,0,0]) linear_extrude(height=thickness) union() {
+        translate([width/2+2.25,0]) FrontLeftPlate_2d();
+        FrontRightPlate_2d();
+    }
 
 	color([1,0,1]) translate([width-thickness,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) LeftPlate_2d();
 
