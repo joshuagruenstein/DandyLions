@@ -11,3 +11,9 @@ module InterlockingPlate(width, height, botT, topT, leftT, rightT, bottomOffset=
 		for(i=[height*rightT/numLR:height*2/numLR:height-.01]) translate([width-thickness+kerf_2,i,0]) square([thickness+.01,height/numLR-kerf]);
 	}
 }
+
+module knotches(width, number) {
+    for (i=[0:2*width:width*number]) {
+        translate([i,0,0]) square([width,thickness]);
+    }
+}

@@ -1,16 +1,11 @@
 include <puzzle.scad>
 
-// 0.12LB BALL
-// SHORTEST DISTANCE: 2.5"
-// EXTENSION: ~ 0.5" ?
-
-// BRUSH HOLDER: MCMASTER 7900T34
-
-// Phone Cable: https://www.amazon.com/dp/B00JSXUJ7Y/ref=psdc_464394_t3_B00ENZDN3Y
-// Phone Cable Adapter: https://www.amazon.com/StarTech-com-Micro-Mini-Adapter-UUSBMUSBFM/dp/B002O1S8IE/ref=sr_1_1?ie=UTF8&qid=1476927961&sr=8-1&keywords=micro+to+mini+usb+adapter
-// USB Cables for Power Module: https://www.amazon.com/degree-Extension-Female-Adapter-Length/dp/B00RLEQCWS/ref=sr_1_4?ie=UTF8&qid=1477023056&sr=8-4&keywords=right+angle+usb
-
 res = 100;
+
+
+///////////////////////
+//  ROBOT CONSTANTS  //
+///////////////////////
 
 thickness = 0.25;
 
@@ -35,6 +30,11 @@ battery_slot_width = 2.225;
 battery_slot_length = 5.125;
 
 finger_hole_radius = 0.4;
+
+
+/////////////////////////////
+//   MAIN ROBOT STRUCTURE  //
+/////////////////////////////
 
 module FrontPlate_2d() {
 	difference() {
@@ -96,19 +96,31 @@ module BackPlate_2d() {
 	}
 }
 
-module PingSensor_2d() {
-	translate([-0.495, 0]) circle(.315, $fn=res);
-	translate([0.495, 0]) circle(.315, $fn=res);
-}
-
-module MotorMount_2d() {
-	motor_mount_length = 2.52;
-    motor_mount_width = 0.5;
-
-	translate([motor_mount_width/2,-motor_mount_length/2]) union() {
-		circle(screw_diameter/2, $fn=res);
-        translate([0,motor_mount_length]) circle(screw_diameter/2, $fn=res);
-	}
+// ADD HOLE FOR BALL EXIT
+module TopPlate_2d() {    
+    difference() {
+        InterlockingPlate(width,length,1,1,0,1);
+        
+        translate([width/2-(4.5/2),0.75]) rotate(90)knotches(0.5,length*2 - 2.5);
+        translate([width/2+(4.5/2)+0.25,0.75]) rotate(90)knotches(0.5,length*2 - 2.5);
+        
+        translate([width/2+2.5,0,0]) square([width/2-2.25,0.8]);
+        
+        translate([width-width/4+1.1875,0.8]) circle(finger_hole_radius,$fn=res);
+        
+        translate([width-0.25-battery_slot_width,length/2-battery_slot_length/2]) square([battery_slot_width+0.25,battery_slot_length]);
+        
+        translate([width-0.25-battery_slot_width/2,length/2-battery_slot_length/2]) circle(finger_hole_radius,$fn=res);
+        
+        translate([width-0.25-battery_slot_width/2,length/2+battery_slot_length/2]) circle(finger_hole_radius,$fn=res);
+        
+        
+        translate([width-0.5-0.57,length-0.5-1.08]) square([0.57,1.08]);
+    }
+    
+    translate([width/2-2.25,0]) square([4.5,0.25]);
+    
+    translate([width/2-2.5,0]) square(0.25);
 }
 
 module BottomPlate_2d() {
@@ -136,16 +148,26 @@ module BottomPlate_2d() {
 	}
 }
 
-module Ramp_2d() {
-    knotches(0.5,ramp_length/0.5 + 0.5);
+module Motor_Set_2d(loc) {
+    wall_dist = 1.75;
+    axle_length = 0.7;
+    wheel_width = 0.75;
     
-    translate([ramp_length,0.25]) mirror() difference() {
-        square([ramp_length,ramp_height]);
-        
-        translate([0,+ramp_height]) rotate(-atan(ramp_height/ramp_length)) square([30,30]);
-        
-        translate([0.5,0.5]) circle(0.3, $fn=res);
-    }
+    translate([wall_dist,loc,0]) MotorMount_2d();
+    translate([width-wall_dist,loc]) rotate(180) MotorMount_2d();
+
+    translate([wall_dist-axle_length,loc]) square([wheel_width,wheel_diameter], center=true);
+    translate([width-wall_dist+axle_length,loc]) square([wheel_width,wheel_diameter], center=true);
+}
+
+module MotorMount_2d() {
+	motor_mount_length = 2.52;
+    motor_mount_width = 0.5;
+
+	translate([motor_mount_width/2,-motor_mount_length/2]) union() {
+		circle(screw_diameter/2, $fn=res);
+        translate([0,motor_mount_length]) circle(screw_diameter/2, $fn=res);
+	}
 }
 
 module Guard_2d() {
@@ -221,65 +243,10 @@ module LeftGuard_2d() {
     }
 }
 
-module Intake_2d() {    
-    difference() {
-        square([4.25,0.75]);
-        for (i=[0:0.5:3.5]) {
-            translate([i+0.375,0.2]) circle(screw_diameter/2,$fn=res);
-            translate([i+0.375,0.55]) circle(screw_diameter/2,$fn=res);
-        }
-    }
-}
 
-module PhoneSupport_2d() {
-    bracket_width = width/2-2.5;
-    bracket_height = 1.25;
-    
-    difference() {
-        square([bracket_width,bracket_height]);
-        translate([0.25,-0.25]) rotate(90) knotches(0.25,5);
-    }
-    
-}
-
-module Motor_Set_2d(loc) {
-    wall_dist = 1.75;
-    axle_length = 0.7;
-    wheel_width = 0.75;
-    
-    translate([wall_dist,loc,0]) MotorMount_2d();
-    translate([width-wall_dist,loc]) rotate(180) MotorMount_2d();
-
-    translate([wall_dist-axle_length,loc]) square([wheel_width,wheel_diameter], center=true);
-    translate([width-wall_dist+axle_length,loc]) square([wheel_width,wheel_diameter], center=true);
-}
-
-// ADD HOLE FOR BALL EXIT
-module TopPlate_2d() {    
-    difference() {
-        InterlockingPlate(width,length,1,1,0,1);
-        
-        translate([width/2-(4.5/2),0.75]) rotate(90)knotches(0.5,length*2 - 2.5);
-        translate([width/2+(4.5/2)+0.25,0.75]) rotate(90)knotches(0.5,length*2 - 2.5);
-        
-        translate([width/2+2.5,0,0]) square([width/2-2.25,0.8]);
-        
-        translate([width-width/4+1.1875,0.8]) circle(finger_hole_radius,$fn=res);
-        
-        translate([width-0.25-battery_slot_width,length/2-battery_slot_length/2]) square([battery_slot_width+0.25,battery_slot_length]);
-        
-        translate([width-0.25-battery_slot_width/2,length/2-battery_slot_length/2]) circle(finger_hole_radius,$fn=res);
-        
-        translate([width-0.25-battery_slot_width/2,length/2+battery_slot_length/2]) circle(finger_hole_radius,$fn=res);
-        
-        
-        translate([width-0.5-0.57,length-0.5-1.08]) square([0.57,1.08]);
-    }
-    
-    translate([width/2-2.25,0]) square([4.5,0.25]);
-    
-    translate([width/2-2.5,0]) square(0.25);
-}
+/////////////////////////////
+//     ROBOT STRUCTURE     //
+/////////////////////////////
 
 module Wheel_2d() {
     bolt_circle = 0.63;
@@ -301,6 +268,78 @@ module Wheel_2d() {
         translate([0,-bolt_circle/2]) circle(screw_diameter/2,$fn=res);
         circle(shaft_diameter/2,$fn=res);
 	}
+}
+
+module PhoneSupport_2d() {
+    bracket_width = width/2-2.5;
+    bracket_height = 1.25;
+    
+    difference() {
+        square([bracket_width,bracket_height]);
+        translate([0.25,-0.25]) rotate(90) knotches(0.25,5);
+    }    
+}
+
+module BatteryBracket_Top_2d() {
+    difference() {
+        square([2.1,5]);
+        translate([0.25,0.25]) rotate(90) knotches(0.25,20);
+        
+        translate([0.5,0]) knotches(0.25,5);
+        
+        translate([0.5,4.75]) knotches(0.25,5);
+    }
+}
+
+module BatteryBracket_Back_2d() {
+    difference() {
+        square([1.25,5]);
+        translate([0.25,0]) rotate(90) knotches(0.25,20);
+        
+        translate([0.5,0]) knotches(0.25,2);
+        translate([0.5,4.75]) knotches(0.25,2);
+    }
+}
+
+module BatteryBracket_Side_2d() {
+    intersection() {
+        difference() {
+            square([2.1,1.25]);
+            
+            translate([0,1]) square(0.25);
+            translate([0.25,1]) knotches(0.25,6);
+            translate([2,1]) square(0.25);
+            
+            translate([0.25,0.25]) rotate(90) knotches(0.25,2);
+        } translate([0,1]) scale([2.1,1]) circle(1,$fn=res);
+    }
+}
+
+
+///////////////////////
+//   BALL HANDLING   //
+///////////////////////
+
+module Ramp_2d() {
+    knotches(0.5,ramp_length/0.5 + 0.5);
+    
+    translate([ramp_length,0.25]) mirror() difference() {
+        square([ramp_length,ramp_height]);
+        
+        translate([0,+ramp_height]) rotate(-atan(ramp_height/ramp_length)) square([30,30]);
+        
+        translate([0.5,0.5]) circle(0.3, $fn=res);
+    }
+}
+
+module Intake_2d() {    
+    difference() {
+        square([4.25,0.75]);
+        for (i=[0:0.5:3.5]) {
+            translate([i+0.375,0.2]) circle(screw_diameter/2,$fn=res);
+            translate([i+0.375,0.55]) circle(screw_diameter/2,$fn=res);
+        }
+    }
 }
 
 module CupSide_2d() {
@@ -352,11 +391,9 @@ module CupSide_2d() {
 }
 
 
-module knotches(width, number) {
-    for (i=[0:2*width:width*number]) {
-        translate([i,0,0]) square([width,thickness]);
-    }
-}
+///////////////////////
+//     RENDERING     //
+///////////////////////
 
 module Render() {
 	color([1,0,0]) translate([0,0,0.25]) linear_extrude(height=thickness) BottomPlate_2d();
@@ -428,41 +465,6 @@ module BatteryBracket_3d() {
     color([1,0,0]) translate([0,5,-1]) rotate([90,0,0]) linear_extrude(height=thickness) BatteryBracket_Side_2d();
 }
 
-module BatteryBracket_Top_2d() {
-    difference() {
-        square([2.1,5]);
-        translate([0.25,0.25]) rotate(90) knotches(0.25,20);
-        
-        translate([0.5,0]) knotches(0.25,5);
-        
-        translate([0.5,4.75]) knotches(0.25,5);
-    }
-}
-
-module BatteryBracket_Back_2d() {
-    difference() {
-        square([1.25,5]);
-        translate([0.25,0]) rotate(90) knotches(0.25,20);
-        
-        translate([0.5,0]) knotches(0.25,2);
-        translate([0.5,4.75]) knotches(0.25,2);
-    }
-}
-
-module BatteryBracket_Side_2d() {
-    intersection() {
-        difference() {
-            square([2.1,1.25]);
-            
-            translate([0,1]) square(0.25);
-            translate([0.25,1]) knotches(0.25,6);
-            translate([2,1]) square(0.25);
-            
-            translate([0.25,0.25]) rotate(90) knotches(0.25,2);
-        } translate([0,1]) scale([2.1,1]) circle(1,$fn=res);
-    }
-}
-
 module Cup_3d(ball) {
     if (ball) {
         Particle();
@@ -485,6 +487,11 @@ module Wheel_Pair_3d(loc) {
     translate([1.75,loc-1.41,0.5]) Motor_Pair_3d();
     translate([width-1.75,loc+1.42,0.5]) rotate([0,0,180]) Motor_Pair_3d();
 }
+
+
+//////////////////////
+//   TETRIX PARTS   //
+//////////////////////
 
 module Motor_Pair_3d() {
     indent = 0.2;
