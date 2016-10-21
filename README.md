@@ -5,11 +5,14 @@
  - 0.12lb Ball
  - Shortest Distance for Spring: 2.5"
  - Spring Extension for Shot: ~ 0.5"?
+ - Possible Spring Options
+   - [McMaster 9654K211](http://www.mcmaster.com/#9654K211): 4.57lbs
+   - [McMaster 1832K27](http://www.mcmaster.com/#1832K27): 37lbs
 
 #### Intake
 
- - Brush Holder: McMaster 7900T34
- - Brush: McMaster 7900T2
+ - Brush Holder: [McMaster 7900T34](http://www.mcmaster.com/#7900T34)
+ - Brush: [McMaster 7900T2](http://www.mcmaster.com/#7900T2)
 
 #### Cabling
 
