@@ -56,10 +56,7 @@ module FrontPlate_2d(is_square) {
 }
 
 module LeftPlate_2d() {
-	difference() {
-        InterlockingPlate(length,height,0,0,0,1,0.25);                
-        translate([1,2]) rotate(90) knotches(0.25,5);
-    }
+	InterlockingPlate(length,height,0,0,0,1,0.25);
     
     translate([length/2-battery_slot_length/2,height-0.25]) square([battery_slot_length,0.25]);
     
@@ -219,13 +216,12 @@ module Intake_2d() {
 }
 
 module PhoneSupport_2d() {
-    bracket_width = width/2-2.25;
+    bracket_width = width/2-2.5;
     bracket_height = 1.25;
     
     difference() {
         square([bracket_width,bracket_height]);
         translate([0.25,-0.25]) rotate(90) knotches(0.25,5);
-        translate([bracket_width,-0.25]) rotate(90) knotches(0.25,5);
     }
     
 }
