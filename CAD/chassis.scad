@@ -6,6 +6,10 @@ include <puzzle.scad>
 
 // BRUSH HOLDER: MCMASTER 7900T34
 
+// Phone Cable: https://www.amazon.com/dp/B00JSXUJ7Y/ref=psdc_464394_t3_B00ENZDN3Y
+// Phone Cable Adapter: https://www.amazon.com/StarTech-com-Micro-Mini-Adapter-UUSBMUSBFM/dp/B002O1S8IE/ref=sr_1_1?ie=UTF8&qid=1476927961&sr=8-1&keywords=micro+to+mini+usb+adapter
+// USB Cables for Power Module: https://www.amazon.com/degree-Extension-Female-Adapter-Length/dp/B00RLEQCWS/ref=sr_1_4?ie=UTF8&qid=1477023056&sr=8-4&keywords=right+angle+usb
+
 res = 100;
 
 thickness = 0.25;
@@ -15,7 +19,7 @@ kerf_2 = kerf / 2;
 
 width = 12;
 length = 10;
-height = 6;
+height = 6.5;
 
 axle_height = 0.16 + 0.47;
 wheel_diameter = 3;
@@ -27,19 +31,25 @@ curve_depth = 1.5;
 ramp_length = 2.5;
 ramp_height = 2;
 
+battery_slot_width = 2.225;
+battery_slot_length = 5.125;
+
+finger_hole_radius = 0.4;
+
 module FrontPlate_2d(is_square) {
 	difference() {
         InterlockingPlate(width,height,0,0,0,1,0.25);
-        translate([width/2,2]) square([4.5,4],center=true);
+        translate([width/2,2]) square([4.5,20],center=true);
         
         translate([width/2 - 2.25,0.75]) rotate(90) knotches(0.5,height*2 - 2.5);
         translate([width/2 + 2.5,0.75]) rotate(90) knotches(0.5,height*2 - 2.5);
         
         for (i=[width/2-2.25:0.25:width/2+2.125]) {
-            translate([i,0]) square([0.125,5.5]);
+            translate([i,0]) square([0.125,6]);
         }
         
         translate([width/2-3.25,4.17]) MotorMount_2d();
+        
     }
     
     translate([width/2+2.5,height-0.25]) square([3,0.25]);
@@ -47,13 +57,13 @@ module FrontPlate_2d(is_square) {
 
 module LeftPlate_2d() {
 	difference() {
-        InterlockingPlate(length,height,0,0,0,1,0.25);
-        //translate([length/2,height*.8]) PingSensor_2d();
-        
+        InterlockingPlate(length,height,0,0,0,1,0.25);                
         translate([1,2]) rotate(90) knotches(0.25,5);
     }
     
-    translate([0,height-0.25]) square([0.5,0.25]);
+    translate([length/2-battery_slot_length/2,height-0.25]) square([battery_slot_length,0.25]);
+    
+    translate([0.25,height-0.25]) square([0.25,0.25]);
 }
 
 module RightPlate_2d() {
@@ -155,8 +165,9 @@ module Guard_2d() {
 }
 
 module RightGuard_2d() {
-    topLeftX = 2.88;
-    topLeftY = 5.18;
+    topLeftX = 3.45;
+    topLeftY = 5.32;
+    
     
     difference() {
         Guard_2d();
@@ -166,17 +177,17 @@ module RightGuard_2d() {
         translate([length-4,0.75]) circle(0.3,$fn=res);
         
         translate([topLeftX,topLeftY]) circle(screw_diameter/2,$fn=res);
-        translate([topLeftX+3.78,topLeftY]) circle(screw_diameter/2,$fn=res);
-        translate([topLeftX,topLeftY-3.44]) circle(screw_diameter/2,$fn=res);
-        translate([topLeftX+3.78,topLeftY-3.44]) circle(screw_diameter/2,$fn=res);
+        translate([topLeftX+2.52,topLeftY]) circle(screw_diameter/2,$fn=res);
+        translate([topLeftX,topLeftY-3.15]) circle(screw_diameter/2,$fn=res);
+        translate([topLeftX+2.52,topLeftY-3.15]) circle(screw_diameter/2,$fn=res);
     }
 }
 
 // Bushing: 5448T1
 // 6MM bore, 10MM OD, 14MM flange
 module LeftGuard_2d() {
-    topLeftX = 3.45;
-    topLeftY = 5.32;
+    topLeftX = 2.88;
+    topLeftY = 5.68;
     
     difference() {
         Guard_2d();
@@ -186,13 +197,14 @@ module LeftGuard_2d() {
         
         translate([0.75,1.75]) rotate(90) knotches(0.25,5);
         
-        translate([3.2,1.7]) circle(0.3,$fn=res);
-        translate([length-3.8,1.7]) circle(0.3,$fn=res);
+        translate([2.4,2.3]) circle(0.3,$fn=res);
+        translate([length-2.9,2.3]) circle(0.3,$fn=res);
         
+       
         translate([topLeftX,topLeftY]) circle(screw_diameter/2,$fn=res);
-        translate([topLeftX+2.52,topLeftY]) circle(screw_diameter/2,$fn=res);
-        translate([topLeftX,topLeftY-3.15]) circle(screw_diameter/2,$fn=res);
-        translate([topLeftX+2.52,topLeftY-3.15]) circle(screw_diameter/2,$fn=res);
+        translate([topLeftX+3.78,topLeftY]) circle(screw_diameter/2,$fn=res);
+        translate([topLeftX,topLeftY-3.44]) circle(screw_diameter/2,$fn=res);
+        translate([topLeftX+3.78,topLeftY-3.44]) circle(screw_diameter/2,$fn=res);
     }
 }
 
@@ -231,9 +243,7 @@ module Motor_Set_2d(loc) {
 }
 
 // ADD HOLE FOR BALL EXIT
-// Cable: https://www.amazon.com/dp/B00JSXUJ7Y/ref=psdc_464394_t3_B00ENZDN3Y
-// Adapter: https://www.amazon.com/StarTech-com-Micro-Mini-Adapter-UUSBMUSBFM/dp/B002O1S8IE/ref=sr_1_1?ie=UTF8&qid=1476927961&sr=8-1&keywords=micro+to+mini+usb+adapter
-module TopPlate_2d() {
+module TopPlate_2d() {    
     difference() {
         InterlockingPlate(width,length,1,1,0,1);
         
@@ -242,8 +252,17 @@ module TopPlate_2d() {
         
         translate([width/2+2.5,0,0]) square([width/2-2.25,0.8]);
         
-        translate([width-width/4+1.1875,0.8]) circle(0.4,$fn=res);
-    }
+        translate([width-width/4+1.1875,0.8]) circle(finger_hole_radius,$fn=res);
+        
+        translate([width-0.25-battery_slot_width,length/2-battery_slot_length/2]) square([battery_slot_width+0.25,battery_slot_length]);
+        
+        translate([width-0.25-battery_slot_width/2,length/2-battery_slot_length/2]) circle(finger_hole_radius,$fn=res);
+        
+        translate([width-0.25-battery_slot_width/2,length/2+battery_slot_length/2]) circle(finger_hole_radius,$fn=res);
+        
+        
+        translate([width-0.5-0.57,length-0.5-1.08]) square([0.57,1.08]);
+    } translate([width/2-2.25,0]) square([4.5,0.25]);
 }
 
 module Wheel_2d() {
@@ -334,7 +353,7 @@ module Render() {
 
 	color([1,0,1]) translate([0,0,0]) rotate([90,0,90]) linear_extrude(height=thickness) RightPlate_2d();
 
-	color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
+    color([0,1,1]) translate([0,0,height-thickness]) linear_extrude(height=thickness) TopPlate_2d();
     
     translate([width/2-1,curve_depth+0.25,0.25]) rotate([90,0,90]) linear_extrude(height=thickness) Ramp_2d();
     
@@ -365,15 +384,64 @@ module Render() {
 
     Particle(width/2);
     
-    translate([width/2+2.75,0.3,0.5]) MotoG();
+    translate([width/2+2.75,0.3,0.5]) NexusPhone();
     
     translate([width/2+2.25,1,2]) rotate([90,0,0]) linear_extrude(height=thickness) PhoneSupport_2d();
+            
+    translate([8.4,0.78,8.43]) rotate([90,270,180]) PowerModule_3d();
+        
+    translate([2.25,5.17,3.75]) rotate([0,90,90]) MotorController_3d();
     
-    translate([3.6,0.8,-0.5]) rotate([0,90,90]) PowerModule_3d();
+    translate([1,5.17,3.75]) rotate([0,90,90]) MotorController_3d();
     
-    translate([9.75,4.75,3.75]) rotate([0,90,270])MotorController_3d();
+    translate([9.6,7.5,4.4]) rotate([90,0,0]) TetrixBattery();
     
-    translate([9.75+1.125,4.75,3.75]) rotate([0,90,270])MotorController_3d();
+    translate([11.75,7.5,4.125]) rotate([0,0,180]) BatteryBracket_3d();
+}
+
+module BatteryBracket_3d() {
+    linear_extrude(height=thickness) BatteryBracket_Top_2d();
+    
+    color([0,1,0]) translate([0,0,0.25]) rotate([0,90,0]) linear_extrude(height=thickness) BatteryBracket_Back_2d();
+    
+    color([1,0,0]) translate([0,0.25,-1]) rotate([90,0,0]) linear_extrude(height=thickness) BatteryBracket_Side_2d();
+    
+    color([1,0,0]) translate([0,5,-1]) rotate([90,0,0]) linear_extrude(height=thickness) BatteryBracket_Side_2d();
+}
+
+module BatteryBracket_Top_2d() {
+    difference() {
+        square([2.1,5]);
+        translate([0.25,0.25]) rotate(90) knotches(0.25,20);
+        
+        translate([0.5,0]) knotches(0.25,5);
+        
+        translate([0.5,4.75]) knotches(0.25,5);
+    }
+}
+
+module BatteryBracket_Back_2d() {
+    difference() {
+        square([1.25,5]);
+        translate([0.25,0]) rotate(90) knotches(0.25,20);
+        
+        translate([0.5,0]) knotches(0.25,2);
+        translate([0.5,4.75]) knotches(0.25,2);
+    }
+}
+
+module BatteryBracket_Side_2d() {
+    intersection() {
+        difference() {
+            square([2.1,1.25]);
+            
+            translate([0,1]) square(0.25);
+            translate([0.25,1]) knotches(0.25,6);
+            translate([2,1]) square(0.25);
+            
+            translate([0.25,0.25]) rotate(90) knotches(0.25,2);
+        } translate([0,1]) scale([2.1,1]) circle(1,$fn=res);
+    }
 }
 
 module Cup_3d(ball) {
@@ -415,8 +483,12 @@ module MotorController_3d() {
     color([0.5,1,1]) scale(0.393701) import("tetrix/motor_controller.stl");
 }
 
-module MotoG() {
-    color([0.4,0.8,0.1]) cube([2.59,0.46,5.11]); 
+module NexusPhone() {
+    color([0.4,0.8,0.1]) cube([2.723,0.338,5.427]); 
+}
+
+module TetrixBattery() {
+    color([0.1,0.1,0.1]) cube([2.1,2.1,5]);
 }
 
 module Particle(x,y,z) {
