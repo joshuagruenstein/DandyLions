@@ -25,7 +25,9 @@
 
 #### Base
 
- - Retracting tubing: [McMaster 5421k17](http://www.mcmaster.com/#5421k17)
+ - Tubing Options
+   - Compressible: [McMaster 55275K13](http://www.mcmaster.com/#55275K13)
+   - Retracting: [McMaster 5421k17](http://www.mcmaster.com/#5421k17)
  - [3D printed impeller](http://www.thingiverse.com/thing:13188)
 
 #### Lifter
