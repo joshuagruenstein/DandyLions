@@ -88,6 +88,8 @@ module TopPlate_2d() {
 
 
         translate([width-0.5-0.57,length-0.5-1.08]) square([0.57,1.08]);
+
+		translate([8.65,8.55]) scale(0.6) PowerSticker();
     }
 
     translate([width/2-2.25,0]) square([4.5,0.25]);

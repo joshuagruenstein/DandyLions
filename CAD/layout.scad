@@ -50,16 +50,11 @@ module SheetThree() {
     translate([0.25,0.25]) TopPlate_2d();
 
     translate([19,0]) rotate(90) LeftPlate_2d();
-
-    //translate([19.25,0.25]) BatteryBracket_Top_2d();
+    
     translate([10,2.75]) BatteryBracket_Top_2d();
-
-
     translate([5.25,10.5]) rotate(90) BatteryBracket_Back_2d();
-
     translate([5.5,10.5]) BatteryBracket_Side_2d();
     translate([9.75,11.75]) rotate(180) BatteryBracket_Side_2d();
-
 }
 
 /* Wheels

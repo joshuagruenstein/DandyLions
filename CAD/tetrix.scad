@@ -1,3 +1,5 @@
+res = 100;
+
 module Motor_Set_2d(loc) {
     wall_dist = 1.75;
     axle_length = 0.7;
@@ -46,4 +48,26 @@ module TetrixBattery() {
 
 module Particle(x,y,z) {
     translate([x,y,z]) translate([0,0,1.5]) color([0,0,1]) scale(0.0393701) import("tetrix/particle.stl");
+}
+
+module PowerSticker(inverse) {
+    translate([0.625,0.625]) difference() {
+        if (inverse) translate([-0.625,-0.625]) square([3.75,1.25]);
+        union() {
+            difference() {
+                circle(0.5,$fn=res);
+                difference() {
+                    circle(0.3,$fn=res);
+                    circle(0.2,$fn=res);
+                    translate([0,0.5]) square([0.2,1],center=true);
+                } translate([0,0.2]) square([0.1,0.4],center=true);
+            }
+
+            translate([1.8,0]) union() {
+                translate([0,0.05]) scale(0.025) text("MAIN ROBOT", font = "Liberation Sans:style=Bold Italic", halign = "center");
+                translate([0,-0.3]) scale(0.025) text("POWER", font = "Liberation Sans:style=Bold Italic", halign = "center");
+            }
+        }
+    }
+
 }
