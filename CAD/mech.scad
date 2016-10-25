@@ -42,7 +42,7 @@ module CupSide_2d() {
 
         translate([1.85,1.6]) circle(0.157,$fn=res);
 
-    } translate([2,0]) difference() {
+    } translate([1.99,0]) difference() {
         square([1,2]);
         translate([0.5,0.5]) circle(0.5,$fn=res);
         translate([0.5,-1]) square([1,2]);
