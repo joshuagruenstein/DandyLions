@@ -30,7 +30,7 @@ module FrontPlate_2d() {
 module FrontRightPlate_2d() {
     difference() {
         FrontPlate_2d();
-        translate([width/2,0]) square([10,10]);
+        translate([width/2,-1]) square([10,10]);
 
         translate([width/2-2.5,height-0.25]) square(0.25);
     }
